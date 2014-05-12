@@ -1,0 +1,318 @@
+﻿<html>
+<head>
+
+    <!-- jQuery and jQuery Mobile -->
+    <script src="lib/jquery-1.9.1.min.js"></script>
+    <script src="lib/jquery.mobile-1.3.1.min.js"></script>
+    <script src="lib/xmlToJason.js"></script>
+    <link rel="stylesheet" href="css/jquery.mobile-1.3.1.min.css">
+
+    <!-- Golf style and jQuery -->
+    <link rel="stylesheet" href="css/golfStyle.css">
+    <script type="text/javascript" src="phonegap.js"></script>
+    <title></title>
+</head>
+<body>
+
+    <div data-role="page" id="page1">
+        
+        <br /><br />
+            <div class="ui-login-content">
+                <br />
+                <div class="ui-content">
+                    <div style="text-align: center;">
+                        <img class="logo" src="images/logo.png">
+                    </div>
+                    <br />
+                    <br />
+                    <input id="txt_username" type="text" data-clear-btn="true" placeholder="Username" value="ifca">
+                    <input id="txt_password" type="password" data-clear-btn="true" placeholder="Password" value="xiao3">
+                    <select data-native-menu="false" id="OutletCode" name="OutletCode">
+                    </select>
+                    <select data-native-menu="false" id="StationCode" name="StationCode">
+                    </select>
+                    <a id="login" class="btnClick" data-role="button" data-transition="flip" data-theme="g">Login
+                    </a>
+                </div>
+                <br />
+            </div>
+    </div>
+    <div class="app">
+        <div id="deviceready" class="blink">
+            <p class="event listening"></p>
+            <p class="event received"></p>
+        </div>
+    </div>
+
+</body>
+</html>
+<script type="text/javascript">
+    $(document).ready(function () {
+        var wsUrl_get_outlet_list = "http://localhost/webservice_posv5/n_webservice_posv5.asmx?op=of_get_outlet_list";
+
+        var soapRequest_get_outlet_list =
+            '<?xml version="1.0" encoding="utf-8"?> \
+                <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"> \
+                <soap:Body> \
+                <of_get_outlet_list xmlns="http://tempurl.org" /> \
+                </soap:Body> \
+                </soap:Envelope>';
+
+        $.ajax({
+            type: "POST",
+            url: wsUrl_get_outlet_list,
+            contentType: "text/xml",
+            dataType: "xml",
+            data: soapRequest_get_outlet_list,
+            success: function (xmlHttpRequest, status, req) {
+                // creates object instantce of XMLtoJSON
+                var xml2json = new XMLtoJSON();
+                var decoded_get_outlet_list = $("<div/>").html(req.responseText).text();
+                var strjson_get_outlet_list = xml2json.fromStr(decoded_get_outlet_list, 'string');
+                var parse_strjson_get_outlet_list = jQuery.parseJSON(strjson_get_outlet_list);
+                var select_get_outlet_list = $('#OutletCode');
+
+                $.each(parse_strjson_get_outlet_list['ds_pm_outlet']['ds_pm_outlet_row'], function () {
+                    var outlet_list = '<option value="' + this['outlet_cd']['#text'] + '">' + this['descs']['#text'] + '</option>';
+                    select_get_outlet_list.append(outlet_list);
+                });
+                $("#OutletCode").trigger("change");
+                getStationList();
+            },
+            error: function (data, status) {
+                alert(data.responseText);
+            }
+        });
+
+        $("#OutletCode").change(function () {
+            getStationList();
+        });
+
+        function getStationList() {
+            var SelectedOutletCode = $("#OutletCode :selected").val();
+            var wsUrl_get_station_list = "http://localhost/webservice_posv5/n_webservice_posv5.asmx?op=of_get_station_list";
+
+            var soapRequest_get_station_list =
+                '<?xml version="1.0" encoding="utf-8"?> \
+            <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"> \
+              <soap:Body> \
+                <of_get_station_list xmlns="http://tempurl.org"> \
+                  <as_outlet_cd>' + SelectedOutletCode + '</as_outlet_cd> \
+                </of_get_station_list> \
+              </soap:Body> \
+            </soap:Envelope>';
+
+            $.ajax({
+                type: "POST",
+                url: wsUrl_get_station_list,
+                contentType: "text/xml",
+                dataType: "xml",
+                data: soapRequest_get_station_list,
+                success: function (xmlHttpRequest, status, req) {
+                    // creates object instantce of XMLtoJSON
+                    var xml2json = new XMLtoJSON();
+                    var decoded_get_station_list = $("<div/>").html(req.responseText).text();
+                    var strjson_get_station_list = xml2json.fromStr(decoded_get_station_list, 'string');
+                    var parse_strjson_get_station_list = jQuery.parseJSON(strjson_get_station_list);
+                    var select_get_station_list = $('#StationCode');
+
+                    //remove all option before added in new one
+                    $('#StationCode option').remove();
+                    $.each(parse_strjson_get_station_list['ds_pm_station']['ds_pm_station_row'], function () {
+                        var station_list = '<option value="' + this['station_cd']['#text'] + '">' + this['station_cd']['#text'] + '</option>';
+                        select_get_station_list.append(station_list);
+                    });
+                    $("#StationCode").trigger("change");
+                },
+                error: function (data, status) {
+                    alert(data.responseText);
+                }
+            });
+        }
+
+        $("#login").click(function () {
+            user_list_function();
+        });
+
+        function login_function() {
+            var txt_username = $("#txt_username").val();
+            var txt_password = $("#txt_password").val();
+            var SelectedOutletCode = $("#OutletCode :selected").val();
+            var SelectedStationCode = $("#StationCode :selected").val();
+
+            var wsUrl_get_login_list = "http://localhost/webservice_posv5/n_webservice_posv5.asmx?op=of_login";
+
+            var soapRequest_get_login_list =
+                '<?xml version="1.0" encoding="utf-8"?> \
+                <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"> \
+                  <soap:Body> \
+                    <of_login xmlns="http://tempurl.org"> \
+                      <as_outlet_cd>' + SelectedOutletCode + '</as_outlet_cd> \
+                      <as_station_cd>' + SelectedStationCode + '</as_station_cd> \
+                      <as_logid>' + txt_username + '</as_logid> \
+                      <as_pwd>' + txt_password + '</as_pwd> \
+                    </of_login> \
+                  </soap:Body> \
+                </soap:Envelope>';
+
+            $.ajax({
+                type: "POST",
+                url: wsUrl_get_login_list,
+                contentType: "text/xml",
+                dataType: "xml",
+                data: soapRequest_get_login_list,
+                success: function (xmlHttpRequest, status, req) {
+                    // creates object instantce of XMLtoJSON
+                    var xml2json = new XMLtoJSON();
+                    var decoded_get_login_list = $("<div/>").html(req.responseText).text();
+                    var decoded_get_login_list_arr = decoded_get_login_list.split("|");
+                    if (decoded_get_login_list_arr[0] == "0") {
+                        meal_period_function();
+                    } else if (decoded_get_login_list_arr[0] == "-3") {
+                        //logout_function();
+                        var result = confirm("该用户已经登录，是否继续登陆");
+                        if (result) {
+                            logout_function();
+                        }
+                    } else {
+                        alert(decoded_get_login_list_arr[0]);
+                    }
+                },
+                error: function (data, status) {
+                    alert(data.responseText);
+                }
+            });
+        }
+
+        function logout_function() {
+            var txt_username = $("#txt_username").val();
+            var SelectedOutletCode = $("#OutletCode :selected").val();
+            var SelectedStationCode = $("#StationCode :selected").val();
+
+            var wsUrl_get_logout_list = "http://localhost/webservice_posv5/n_webservice_posv5.asmx?op=of_logout";
+
+            var soapRequest_get_logout_list =
+                '<?xml version="1.0" encoding="utf-8"?> \
+                <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"> \
+                  <soap:Body> \
+                    <of_logout xmlns="http://tempurl.org"> \
+                      <as_outlet_cd>' + SelectedOutletCode + '</as_outlet_cd> \
+                      <as_station_cd>' + SelectedStationCode + '</as_station_cd> \
+                      <as_logid>' + txt_username + '</as_logid> \
+                    </of_logout> \
+                  </soap:Body> \
+                </soap:Envelope>';
+
+            $.ajax({
+                type: "POST",
+                url: wsUrl_get_logout_list,
+                contentType: "text/xml",
+                dataType: "xml",
+                data: soapRequest_get_logout_list,
+                success: function (xmlHttpRequest, status, req) {
+                    login_function();
+                },
+                error: function (data, status) {
+                    alert(data.responseText);
+                }
+            });
+        }
+
+        function user_list_function() {
+            var txt_username = $("#txt_username").val().toUpperCase();
+            var SelectedOutletCode = $("#OutletCode :selected").val();
+            var SelectedStationCode = $("#StationCode :selected").val();
+            
+            var wsUrl_get_user_list_list = "http://localhost/webservice_posv5/n_webservice_posv5.asmx?op=of_get_user_list";
+
+            var soapRequest_get_user_list_list =
+                '<?xml version="1.0" encoding="utf-8"?> \
+				<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"> \
+				  <soap:Body> \
+					<of_get_user_list xmlns="http://tempurl.org"> \
+					  <as_outlet_cd>'+ SelectedOutletCode + '</as_outlet_cd> \
+					  <as_station_cd>'+ SelectedStationCode + '</as_station_cd> \
+					</of_get_user_list> \
+				  </soap:Body> \
+				</soap:Envelope>';
+
+            $.ajax({
+                type: "POST",
+                url: wsUrl_get_user_list_list,
+                contentType: "text/xml",
+                dataType: "xml",
+                data: soapRequest_get_user_list_list,
+                success: function (xmlHttpRequest, status, req) {
+                    // creates object instantce of XMLtoJSON
+                    var xml2json = new XMLtoJSON();
+                    var decoded_get_user_list_list = $("<div/>").html(req.responseText).text();
+                    var strjson_get_user_list_list = xml2json.fromStr(decoded_get_user_list_list, 'string');
+                    var parse_strjson_get_user_list_list = jQuery.parseJSON(strjson_get_user_list_list);
+                    var in_user_list = 0;
+                    $.each(parse_strjson_get_user_list_list['ds_pm_station_user']['ds_pm_station_user_row'], function () {
+                        if (txt_username == this['user_id']['#text']) {
+                            in_user_list = 1;
+                        }
+                    });
+
+                    if (in_user_list == 1) {
+                        login_function();
+                    } else {
+                        alert('用户无权访问该销售点收银台');
+                    }
+                },
+                error: function (data, status) {
+                    alert(data.responseText);
+                }
+            });
+        }
+
+        function meal_period_function() {
+            var txt_username = $("#txt_username").val();
+            var SelectedOutletCode = $("#OutletCode :selected").val();
+            var SelectedStationCode = $("#StationCode :selected").val();
+
+            var wsUrl_get_meal_period_list = "http://localhost/webservice_posv5/n_webservice_posv5.asmx?op=of_get_meal_period";
+
+            var soapRequest_get_meal_period_list =
+                '<?xml version="1.0" encoding="utf-8"?> \
+				<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"> \
+				  <soap:Body> \
+					<of_get_meal_period xmlns="http://tempurl.org"> \
+					  <as_outlet_cd>' + SelectedOutletCode + '</as_outlet_cd> \
+					</of_get_meal_period> \
+				  </soap:Body> \
+				</soap:Envelope>';
+
+            $.ajax({
+                type: "POST",
+                url: wsUrl_get_meal_period_list,
+                contentType: "text/xml",
+                dataType: "xml",
+                data: soapRequest_get_meal_period_list,
+                success: function (xmlHttpRequest, status, req) {
+                    var xml2json = new XMLtoJSON();
+                    var decoded_get_meal_period_list = $("<div/>").html(req.responseText).text();
+                    var strjson_get_meal_period_list = xml2json.fromStr(decoded_get_meal_period_list, 'string');
+                    var parse_strjson_get_meal_period_list = jQuery.parseJSON(strjson_get_meal_period_list);
+                    var meal_period = parse_strjson_get_meal_period_list['ds_pm_meal_period']['ds_pm_meal_period_row']['meal_cd']['#text'];
+                    
+                    if (meal_period == null) {
+                        meal_period = "";
+                    }
+
+                    localStorage.setItem("username", txt_username);
+                    localStorage.setItem("outlet", SelectedOutletCode);
+                    localStorage.setItem("station", SelectedStationCode);
+                    localStorage.setItem("mealperiod", meal_period);
+                    window.location.href = "main_page.html";
+                },
+                error: function (data, status) {
+                    alert(data.responseText);
+                }
+            });
+        }
+    });
+    
+</script>
+

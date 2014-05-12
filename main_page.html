@@ -1,0 +1,417 @@
+﻿<html>
+<head>
+    
+    <!-- jQuery and jQuery Mobile -->
+    <script src="lib/jquery-1.9.1.min.js"></script>
+    <script src="lib/jquery.mobile-1.3.1.min.js"></script>
+    <link rel="stylesheet" href="css/jquery.mobile-1.3.1.min.css">
+
+    <!-- Golf style and jQuery -->
+    <link rel="stylesheet" href="css/golfStyle.css">
+    <!-- Slider JS -->
+    <script type="text/javascript" src="slider_js/jssor.core.js"></script>
+    <script type="text/javascript" src="slider_js/jssor.utils.js"></script>
+    <script type="text/javascript" src="slider_js/jssor.slider.js"></script>
+    <title></title>
+</head>
+<body>
+
+    <div data-role="page" id="page1">
+        
+        <br /><br />
+            <div class="ui-login-content">
+                <br />
+				<div class="ui-content" align="center">
+					<script>
+						jQuery(document).ready(function ($) {
+							var options = {
+								$AutoPlay: false,                                   //[Optional] Whether to auto play, to enable slideshow, this option must be set to true, default value is false
+								$AutoPlaySteps: 1,                                  //[Optional] Steps to go for each navigation request (this options applys only when slideshow disabled), the default value is 1
+								$AutoPlayInterval: 4000,                            //[Optional] Interval (in milliseconds) to go for next slide since the previous stopped if the slider is auto playing, default value is 3000
+								$PauseOnHover: 0,                                   //[Optional] Whether to pause when mouse over if a slider is auto playing, 0 no pause, 1 pause for desktop, 2 pause for touch device, 3 pause for desktop and touch device, default value is 3
+
+								$ArrowKeyNavigation: true,   			            //[Optional] Allows keyboard (arrow key) navigation or not, default value is false
+								$SlideDuration: 300,                                //[Optional] Specifies default duration (swipe) for slide in milliseconds, default value is 500
+								$MinDragOffsetToSlide: 20,                          //[Optional] Minimum drag offset to trigger slide , default value is 20
+								$SlideWidth: 120,                                   //[Optional] Width of every slide in pixels, default value is width of 'slides' container
+								//$SlideHeight: 150,                                //[Optional] Height of every slide in pixels, default value is height of 'slides' container
+								$SlideSpacing: 1, 					                //[Optional] Space between each slide in pixels, default value is 0
+								$DisplayPieces: 3,                                  //[Optional] Number of pieces to display (the slideshow would be disabled if the value is set to greater than 1), the default value is 1
+								$ParkingPosition: 0,                                //[Optional] The offset position to park slide (this options applys only when slideshow disabled), default value is 0.
+								$UISearchMode: 1,                                   //[Optional] The way (0 parellel, 1 recursive, default value is 1) to search UI components (slides container, loading screen, navigator container, arrow navigator container, thumbnail navigator container etc).
+								$PlayOrientation: 1,                                //[Optional] Orientation to play slide (for auto play, navigation), 1 horizental, 2 vertical, default value is 1
+								$DragOrientation: 1,                                //[Optional] Orientation to drag slide, 0 no drag, 1 horizental, 2 vertical, 3 either, default value is 1 (Note that the $DragOrientation should be the same as $PlayOrientation when $DisplayPieces is greater than 1, or parking position is not 0)
+
+								$BulletNavigatorOptions: {                          //[Optional] Options to specify and enable navigator or not
+									$Class: $JssorBulletNavigator$,                 //[Required] Class to create navigator instance
+									$ChanceToShow: 2,                               //[Required] 0 Never, 1 Mouse Over, 2 Always
+									$AutoCenter: 0,                                 //[Optional] Auto center navigator in parent container, 0 None, 1 Horizontal, 2 Vertical, 3 Both, default value is 0
+									$Steps: 1,                                      //[Optional] Steps to go for each navigation request, default value is 1
+									$Lanes: 1,                                      //[Optional] Specify lanes to arrange items, default value is 1
+									$SpacingX: 0,                                   //[Optional] Horizontal space between each item in pixel, default value is 0
+									$SpacingY: 0,                                   //[Optional] Vertical space between each item in pixel, default value is 0
+									$Orientation: 1                                 //[Optional] The orientation of the navigator, 1 horizontal, 2 vertical, default value is 1
+								},
+
+								$ArrowNavigatorOptions: {
+									$Class: $JssorArrowNavigator$,                  //[Requried] Class to create arrow navigator instance
+									$ChanceToShow: 2,                               //[Required] 0 Never, 1 Mouse Over, 2 Always
+									$AutoCenter: 2,                                 //[Optional] Auto center navigator in parent container, 0 None, 1 Horizontal, 2 Vertical, 3 Both, default value is 0
+									$Steps: 1                                       //[Optional] Steps to go for each navigation request, default value is 1
+								}
+							};
+
+							var jssor_slider1 = new $JssorSlider$("slider1_container", options);
+							
+							//modify code
+							function ScaleSlider() {
+								var parentWidth = jssor_slider1.$Elmt.parentNode.clientWidth;
+								//alert(parentWidth);
+								if (parentWidth)
+									jssor_slider1.$SetScaleWidth(parentWidth-50);
+								else
+									$JssorUtils$.$Delay(ScaleSlider, 30);
+							}
+
+							ScaleSlider();
+							$JssorUtils$.$AddEvent(window, "load", ScaleSlider);
+
+							if (!navigator.userAgent.match(/(iPhone|iPod|iPad|BlackBerry|IEMobile)/)) {
+								$JssorUtils$.$OnWindowResize(window, ScaleSlider);
+							}
+							//responsive code end
+						});
+					</script>
+                    <div class="ui-grid-d slot">
+                        <div class="ui-block-a" data-mini="true">
+                            <div data-role="fieldcontain">
+                                <label class="menu_label" for="table" style="min-width: 50px;">桌号：</label>
+                                <div style="position: relative; display: block;">
+                                    <input type="text" class="menu_input_box" id="table" value="" data-role="none" data-mini="true" data-theme="b" data-corners="false">
+                                    <div id="searchTable" style="display: none; position: absolute; left: 5px; overflow: visible; z-index: 10000">
+                                        <ul id="tableul" class="ul-style">01空台</ul>
+                                        <ul id="Ul1" class="ul-style">02空台</ul>
+                                        <ul id="Ul2" class="ul-style">03空台</ul>
+                                        <ul id="Ul3" class="ul-style">04空台</ul>
+                                        <ul id="Ul4" class="ul-style">05空台</ul>
+                                        <ul id="Ul5" class="ul-style">06空台</ul>
+                                        <ul id="Ul6" class="ul-style">07空台</ul>
+                                        <ul id="Ul7" class="ul-style">08空台</ul>
+                                        <ul id="Ul8" class="ul-style">09空台</ul>
+                                        <ul id="Ul9" class="ul-style">10空台</ul>
+                                        <ul id="Ul10" class="ul-style">20空台</ul>
+                                        <ul id="Ul11" class="ul-style">50空台</ul>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                        <div class="ui-block-b">
+                            <div data-role="fieldcontain">
+                                <label class="menu_label" for="customerNumber" style="min-width: 50px;">人数：</label>
+                                <input type="text" class="menu_input_box" id="customerNumber" data-theme="b" value="" data-clear-btn="true"  data-role="none" data-mini="true" data-corners="false"/>
+                            </div>
+                        </div>
+                        <div class="ui-block-c">
+                            <div data-role="fieldcontain">
+                                <label class="menu_label" for="customerType" style="min-width: 80px;">客户类型：</label>
+                                <select id="customerType" style="font-size: 2vw; font-weight: 700; height: 25px" data-role="none" data-mini="true" data-theme="b" data-corners="false">
+                                    <option value="V">普通客</option>
+                                    <option value="M">会员</option>
+                                    <option value="R">酒店客</option>
+                                    <option value="S">员工</option>
+                                    <option value="O">其他</option>
+                                </select>
+                            </div>
+                        </div>
+                        <div class="ui-block-d">
+                            <div data-role="fieldcontain">
+                                <label class="menu_label" for="merberId" style="min-width: 70px;">会员号：</label>
+                                <input type="text" class="menu_input_box" id="merberId" data-theme="b" value=""  data-role="none" data-mini="true" data-corners="false">
+                            </div>
+                        </div>
+                        <div class="ui-block-e">
+                            <div data-role="fieldcontain">
+                                <a id="createBill" href="#createBill" data-role="button" data-corners="false" data-theme="g" data-inline="true" data-mini="true" class="menu_header_menu_button_width"><span class="menu_font_size">开台</span></a>
+                                <a id="orderPanel" href="order_panel.html" rel="external" data-ajax="false" data-role="button" data-corners="false" data-theme="g" data-icon="check" data-inline="true" data-mini="true" class="menu_header_menu_button_width"><span class="menu_font_size">已选菜肴</span></a>
+                            </div>
+                        </div>
+                    </div>
+					<!-- Jssor Slider Begin -->
+					<!-- You can move inline styles (except 'top', 'left', 'width' and 'height') to css file or css block. -->
+					<div id="slider1_container" style="position: relative; width: 500px; height: 55px;">
+
+						<!-- Loading Screen -->
+						<div u="loading" style="position: absolute; top: 0px; left: 0px;">
+							<div style="filter: alpha(opacity=70); opacity:0.7; position: absolute; display: block;
+								background-color: #000; top: 0px; left: 0px;width: 100%;height:100%;">
+							</div>
+							<div style="position: absolute; display: block; background: url(images/loading.gif) no-repeat center center;
+								top: 0px; left: 0px;width: 100%;height:100%;">
+							</div>
+						</div>
+
+						<!-- Slides Container -->
+						<div u="slides" id="menuPanel" style="cursor: move; position: absolute; width: 410px; height:55px; overflow: hidden; margin: 0px 45px 0px 35px;">
+							<div><a id="Salable" data-role="button" class="menu_type_style"><span class="menu_type_size" >热销菜品</span></a></div>
+							<div><a id="BQBV      " data-role="button" class="menu_type_style"><span class="menu_type_size" >烧烤 (饮品)</span></a></div>
+							<div><a id="BQFD      " data-role="button" class="menu_type_style"><span class="menu_type_size" >烧烤 (食品)</span></a></div>
+							<div><a id="BQJFD     " data-role="button" class="menu_type_style"><span class="menu_type_size" >BBQ (鲜榨果汁)</span></a></div>
+							<div><a id="GDFD      " data-role="button" class="menu_type_style"><span class="menu_type_size" >青龙食品</span></a></div>
+							<div><a id="GDHCFD    " data-role="button" class="menu_type_style"><span class="menu_type_size" >青龙热饮鲜榨 （食品）</span></a></div>
+							<div><a id="OPBV      " data-role="button" class="menu_type_style"><span class="menu_type_size" >饮品手写单</span></a></div>
+							<div><a id="OPDG      " data-role="button" class="menu_type_style"><span class="menu_type_size" >客损手写单</span></a></div>
+							<div><a id="OPEQ      " data-role="button" class="menu_type_style"><span class="menu_type_size" >设备手写单</span></a></div>
+							<div><a id="OPFD      " data-role="button" class="menu_type_style"><span class="menu_type_size" >食品手写单</span></a></div>
+							<div><a id="OPOT      " data-role="button" class="menu_type_style"><span class="menu_type_size" >其它手写单</span></a></div>
+							<div><a id="VDBV      " data-role="button" class="menu_type_style"><span class="menu_type_size" >伏特加(SP)</span></a></div>
+							<div><a id="WIBV      " data-role="button" class="menu_type_style"><span class="menu_type_size" >葡萄酒(SP)</span></a></div>
+							<div><a id="wsbv      " data-role="button" class="menu_type_style"><span class="menu_type_size" >苏格兰威士忌(SP)</span></a></div>
+						</div>
+		
+						<!-- Arrow Navigator Skin Begin -->
+						<style>
+							/* jssor slider arrow navigator skin 03 css */
+							/*
+							.jssora03l              (normal)
+							.jssora03r              (normal)
+							.jssora03l:hover        (normal mouseover)
+							.jssora03r:hover        (normal mouseover)
+							.jssora03ldn            (mousedown)
+							.jssora03rdn            (mousedown)
+							*/
+							.jssora03l, .jssora03r, .jssora03ldn, .jssora03rdn
+							{
+								position: absolute;
+								cursor: pointer;
+								display: block;
+								background: url(images/a13_new.png) no-repeat;
+								overflow:hidden;
+							}
+							.jssora03l { background-position: -10px -33px; }
+							.jssora03r { background-position: -80px -33px; }
+							.jssora03l:hover { background-position: -130px -33px; }
+							.jssora03r:hover { background-position: -200px -33px; }
+							.jssora03ldn { background-position: -250px -33px; }
+							.jssora03rdn { background-position: -320px -33px; }
+						</style>
+						<!-- Arrow Left -->
+						<span u="arrowleft" class="jssora03l" style="width: 30px; height: 30px; left: 0px;">
+						</span>
+						<!-- Arrow Right -->
+						<span u="arrowright" class="jssora03r" style="width: 30px; height: 30px; right: 16px;">
+						</span>
+						<!-- Arrow Navigator Skin End -->
+					</div>
+					<!-- Jssor Slider End -->
+
+                    <div class="ui-grid-b slot">
+                       <div class="ui-block-a" id="Div2">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size" >青岛啤酒330ml</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">30.00/ 瓶</span></a>
+                            </div>
+                        </div>
+                        <div class="ui-block-b" id="Div3">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size">燕京啤酒300ml</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">30.00/ 瓶</span></a>
+                            </div>
+                        </div>
+                        <div class="ui-block-c" id="Div4">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size">燕京无醇啤酒</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">30.00/ 瓶</span></a>
+                            </div>
+                        </div>
+          
+                        <div class="ui-block-a" id="Div7">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size">冰锐青柠啤酒</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">40.00/ 瓶</span></a>
+                            </div>
+                        </div>
+                        <div class="ui-block-b" id="Div8">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size">冰锐蔓越莓啤酒</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">40.00/ 瓶</span></a>
+                            </div>
+                        </div>
+                        <div class="ui-block-c" id="Div9">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size">冰锐水蜜桃啤酒</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">40.00/ 瓶</span></a>
+                            </div>
+                        </div>    
+                        <div class="ui-block-a" id="Div1">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size">喜力啤酒330ml</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">40.00/ 瓶</span></a>
+                            </div>
+                        </div>
+                        <div class="ui-block-b" id="Div5">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size">嘉士伯啤酒330ml</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">40.00/ 瓶</span></a>
+                            </div>
+                        </div>
+                        <div class="ui-block-c" id="Div6">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size">百威啤酒330ml</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">40.00/ 瓶</span></a>
+                            </div>
+                        </div>
+          
+                        <div class="ui-block-a" id="Div10">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size">朝日啤酒330ml</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">40.00/ 瓶</span></a>
+                            </div>
+                        </div>
+                        <div class="ui-block-b" id="Div11">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size">太阳啤酒</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">40.00/ 瓶</span></a>
+                            </div>
+                        </div>
+                        <div class="ui-block-c" id="Div12">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size">时代啤酒330ml</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">40.00/ 瓶</span></a>
+                            </div>
+                        </div>
+                        <div class="ui-block-a" id="Div13">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size">健力士黑啤330ml</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">35.00/ 瓶</span></a>
+                            </div>
+                        </div>
+                        <div class="ui-block-b" id="Div14">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size">福佳啤酒</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">35.00/ 瓶</span></a>
+                            </div>
+                        </div>
+                        <div class="ui-block-c" id="Div15">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size">普拉纳啤酒500ml</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">35.00/ 瓶</span></a>
+                            </div>
+                        </div>
+          
+                        <div class="ui-block-a" id="Div16">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size">艾丁格白啤</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">35.00/ 瓶</span></a>
+                            </div>
+                        </div>
+                        <div class="ui-block-b" id="Div17">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size">依云330ml</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">35.00/ 瓶</span></a>
+                            </div>
+                        </div>
+                        <div class="ui-block-c" id="Div18">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size">依云1000ml</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">35.00/ 瓶</span></a>
+                            </div>
+                        </div>
+                        <div class="ui-block-a" id="Div19">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size">圣培露250ml</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">25.00/ 瓶</span></a>
+                            </div>
+                        </div>
+                        <div class="ui-block-b" id="Div20">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size">圣培露750ml</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">25.00/ 瓶</span></a>
+                            </div>
+                        </div>
+                        <div class="ui-block-c" id="Div21">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size">巴黎矿泉水330 ml</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">25.00/ 瓶</span></a>
+                            </div>
+                        </div>
+          
+                        <div class="ui-block-a" id="Div22">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size">巴黎矿泉水750 ml</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">25.00/ 瓶</span></a>
+                            </div>
+                        </div>
+                        <div class="ui-block-b" id="Div23">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size">5100矿泉水330ml</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">25.00/ 瓶</span></a>
+                            </div>
+                        </div>
+                        <div class="ui-block-c" id="Div24">
+                            <div data-role="controlgroup" data-type="horizontal">
+                                <a href="order.html" data-role="button" class="menu_width"><span class="menu_font_size">5100矿泉水750ml</span></a>
+                                <a href="order.html" data-role="button" class="menu_price_width"><span class="menu_font_size">45.00/ 瓶</span></a>
+                            </div>
+                        </div>         
+                    </div>
+				</div>
+                <br />
+            </div>
+    </div>
+    <div class="app">
+        <div id="deviceready" class="blink">
+            <p class="event listening"></p>
+            <p class="event received"></p>
+        </div>
+    </div>
+
+</body>
+</html>
+
+<script type="text/javascript">
+    $(document).ready(function () {
+        function getoutlet_meal_majorList() {
+            var outlet = localStorage.getItem('outlet');
+            var mealperiod = localStorage.getItem('mealperiod');
+            var wsUrl_get_outlet_meal_major_list = "http://localhost/webservice_posv5/n_webservice_posv5.asmx?op=of_get_outlet_meal_major";
+
+            var soapRequest_get_outlet_meal_major_list =
+                '<?xml version="1.0" encoding="utf-8"?> \
+				<soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"> \
+				  <soap:Body> \
+					<of_get_outlet_meal_major xmlns="http://tempurl.org"> \
+					  <as_outlet_cd>' + outlet + '</as_outlet_cd> \
+					  <as_meal_cd>' + mealperiod + '</as_meal_cd> \
+					</of_get_outlet_meal_major> \
+				  </soap:Body> \
+				</soap:Envelope>';
+
+            $.ajax({
+                type: "POST",
+                url: wsUrl_get_outlet_meal_major_list,
+                contentType: "text/xml",
+                dataType: "xml",
+                data: soapRequest_get_outlet_meal_major_list,
+                success: function (xmlHttpRequest, status, req) {
+                    // creates object instantce of XMLtoJSON
+                    var xml2json = new XMLtoJSON();
+                    var decoded_get_outlet_meal_major_list = $("<div/>").html(req.responseText).text();
+                    var strjson_get_outlet_meal_major_list = xml2json.fromStr(decoded_get_outlet_meal_major_list, 'string');
+                    var parse_strjson_get_outlet_meal_major_list = jQuery.parseJSON(strjson_get_outlet_meal_major_list);
+                    var select_get_outlet_meal_major_list = $('#menuPanel');
+
+                    //remove all option before added in new one
+                    $('#menuPanel').remove();
+                    $.each(parse_strjson_get_outlet_meal_major_list['ds_pm_outlet_meal_major']['ds_pm_outlet_meal_major_row'], function () {
+                        var outlet_meal_major_list = '<option value="' + this['outlet_meal_major_cd']['#text'] + '">' + this['outlet_meal_major_cd']['#text'] + '</option>';
+                        select_get_outlet_meal_major_list.append(outlet_meal_major_list);
+                    });
+                    $("#menuPanel").trigger("change");
+                },
+                error: function (data, status) {
+                    alert(data.responseText);
+                }
+            });
+        }
+    });
+</script>

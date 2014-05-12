@@ -1,0 +1,67 @@
+﻿<html>
+<head>
+    
+    <!-- jQuery and jQuery Mobile -->
+    <script src="lib/jquery-1.9.1.min.js"></script>
+    <script src="lib/jquery.mobile-1.3.1.min.js"></script>
+    <link rel="stylesheet" href="css/jquery.mobile-1.3.1.min.css">
+
+    <!-- Golf style and jQuery -->
+    <link rel="stylesheet" href="css/golfStyle.css">
+    <script type="text/javascript" src="phonegap.js"></script>
+    <script type="text/javascript" src="js/PushNotification.js"></script>
+    <script type="text/javascript" src="js/index.js"></script>
+    <script type="text/javascript">
+        app.initialize();
+    </script>
+    <script type="text/javascript" src="slider_js/jssor.core.js"></script>
+    <script type="text/javascript" src="slider_js/jssor.utils.js"></script>
+    <script type="text/javascript" src="slider_js/jssor.slider.js"></script>
+    <title></title>
+</head>
+<body>
+    <div data-role="page" id="page1">
+        <br /><br />
+        <div class="ui-login-content">
+            <br />
+            <div class="ui-content" align="center">                
+                <table data-role="table" id="Table1" data-mode="" class="ui-responsive condiment_tbl">
+                    <thead>
+                        <tr>
+                            <td class="orderLeft_Pic" rowspan="3">
+                                &nbsp;&nbsp;
+                            </td>
+                            <th>
+                                请输入菜品数量: &nbsp;&nbsp; <input type="text" class="menu_input_box" id="txtCount" value="" data-role="none" data-mini="true" data-theme="b" data-corners="false">
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>
+                                <span class="condiment_title">青岛啤酒330ml</span>
+                                <span class="condiment_price">RM 30</span>
+                            </th>
+                        </tr>
+                        <tr>
+                            <th>
+                                <a id="confirm" class="ui-btn-right ui-btn ui-shadow ui-mini ui-btn-inline ui-btn-up-f condiment_button" data-corners="false" data-inline="true" data-mini="true" data-theme="f" data-role="button" data-shadow="true" data-iconshadow="true" data-wrapperels="span">
+                                    <span class="ui-btn-inner">
+                                        <span class="ui-btn-text">确定</span>
+                                    </span>
+                                </a> 
+
+                                &nbsp;&nbsp;
+
+                                <a id="cancel" data-rel="back" class="ui-btn-right ui-btn ui-shadow ui-mini ui-btn-inline ui-btn-up-f condiment_button" data-corners="false" data-inline="true" data-mini="true" data-theme="f" data-role="button" data-shadow="true" data-iconshadow="true" data-wrapperels="span">
+                                    <span class="ui-btn-inner">
+                                        <span class="ui-btn-text">取消</span>
+                                    </span>
+                                </a> 
+                            </th>
+                        </tr>    
+                    </thead>
+                </table>
+            </div>
+        </div>
+    </div>
+</body>
+</html>

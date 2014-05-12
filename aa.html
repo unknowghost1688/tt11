@@ -1,0 +1,102 @@
+﻿<html>
+ <head>
+    <title>Calling Web Service from jQuery</title>
+    <script src="lib/jquery-1.9.1.min.js"></script>
+    <script type="text/javascript">
+        $(document).ready(function () {
+            $("#btnCallWebService").click(function (event) {
+                var wsUrl = "http://localhost/webservice_posv5/n_webservice_posv5.asmx?op=of_get_outlet_list";
+                
+                var soapRequest =
+                    '<?xml version="1.0" encoding="utf-8"?> \
+                    <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"> \
+                    <soap:Body> \
+                    <of_get_outlet_list xmlns="http://tempurl.org" /> \
+                    </soap:Body> \
+                    </soap:Envelope>';
+
+                /* var soapRequest = '<?xml version="1.0" encoding="utf-8"?> \
+                <soap:Envelope xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema" xmlns:soap="http://schemas.xmlsoap.org/soap/envelope/"> \
+                  <soap:Body> \
+                    <of_login xmlns="http://tempurl.org"> \
+                      <as_outlet_cd>BBQ</as_outlet_cd> \
+                      <as_station_cd>BBQ1</as_station_cd> \
+                      <as_logid>ifca</as_logid> \
+                      <as_pwd>xiao3</as_pwd> \
+                    </of_login> \
+                  </soap:Body> \
+                </soap:Envelope>'; */
+
+                $.ajax({
+                    type: "POST",
+                    url: wsUrl,
+                    contentType: "text/xml",
+                    dataType: "xml",
+                    data: soapRequest,
+                    success: function (xmlHttpRequest, status, req) {
+                        //alert('aa');
+                        //alert(xmlHttpRequest);
+                        //xmlDoc = $.parseXML(xmlHttpRequest),
+                        //$xml = $(xmlDoc),
+                        //$title = $xml.find("outlet_cd");
+                        //alert($title);
+
+                        //Use jQuery to read XML Document
+                        /* var xml = xmlHttpRequest.responseXML;
+                        var nodes = xml.getElementsByTagName("data");
+                        var data = (nodes.length > 0 ? nodes[0].firstChild.nodeValue : null); */
+                        result = req.responseText;
+                        var res = result.split("ds_pm_outlet_row");
+                        var res_details = res[1].split("outlet_cd");
+                        var str = res_details[1].replace(/[^a-zA-Z ]/g, "");
+                        var str = str.replace(/gt/g, "");
+                        var str = str.replace(/lt/g, "");
+                        $("#response").html(res[5]);
+
+                        //display all book title and author
+                        /* $.each($aaa, function (i, ds_pm_outlet_row) {
+                            alert
+                            var author = $(book).children("author").text();
+                            var bookName = $(book).children("title").text();
+                            var li = $("<li>").text(bookName + " - " + author);
+                            $("#books").append(li);
+                        }); */
+
+                       /* $(xmlHttpRequest.responseXML)
+                           .find('of_get_outlet_listResult')
+                           .each(function()
+                           {
+                               var name = $(this).find('outlet_cd').text();
+                               alert(name);
+                           }); */
+                    },
+                    error: function (data, status) {
+                        alert('bb'+data.responseText);
+                    }
+                });
+
+            });
+        });
+
+        function processSuccess(data, status, req) {
+            alert('aa');
+            if (status == "success")
+                $("#response").text($(req.responseXML).find("of_loginResult").text());
+        }
+
+        function processError(data, status, req) {
+            alert(req.responseText + " " + status);
+        }
+
+    </script>
+</head>
+<body>
+    <h3>
+        Calling Web Services with jQuery/AJAX
+    </h3>
+    Enter your name:
+    <input id="txtName" type="text" />
+    <input id="btnCallWebService" value="Call web service" type="button" />
+    <div id="response" />
+</body>
+</html>
